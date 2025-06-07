@@ -45,7 +45,7 @@ function ContactSection() {
   return (
     <AnimatedSection className="mt-32 max-w-2xl mx-auto px-4">
       <h2 className="text-4xl font-bold mb-4 text-center">Contact Us</h2>
-      <p className="text-gray-400 mb-8 text-center">A Tera team member will reach out within 1 business day.</p>
+      <p className="text-gray-400 mb-8 text-center">A FIE Pilot team member will reach out within 1 business day.</p>
       <motion.form 
         onSubmit={handleSubmit}
         className="space-y-6"

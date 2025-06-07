@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Tera | AI-Powered FIE Automation",
+  title: "FIE Pilot | AI-Powered FIE Automation",
   description: "FERPA-compliant, AI-generated FIE reports for Texas schools.",
   icons: {
     icon: '/favicon.ico',

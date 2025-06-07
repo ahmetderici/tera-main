@@ -38,7 +38,7 @@ const icons = {
     </svg>
   ),
   ferpa: (
-    <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10" />
       <path d="M9 12l2 2l4-4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
@@ -56,7 +56,7 @@ const icons = {
     </svg>
   ),
   price: (
-    <svg className="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10" />
       <path d="M12 8v4l3 3" />
     </svg>
@@ -78,21 +78,23 @@ const icons = {
 function StickyCTA() {
   return (
     <a href="/contact" className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 text-white font-semibold px-8 py-3 rounded-full shadow-lg block md:hidden text-center">
-      Request a Demo
+      Contact us
     </a>
   );
 }
 
 function Hero() {
   return (
-    <AnimatedSection className="flex flex-col items-center text-center px-4 py-20 md:py-32 max-w-4xl mx-auto">
+    <AnimatedSection className="flex flex-col items-center text-center px-4 py-16 md:py-20 max-w-4xl mx-auto">
       <motion.h1 
         className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        1-Minute FIE Reports. 100% TEA-Aligned. FERPA-Compliant.
+        1-Minute FIE Reports.<br/>
+        100% TEA-Aligned.<br/>
+        FERPA-Compliant.
       </motion.h1>
       <motion.p 
         className="mt-6 text-lg text-gray-300 max-w-2xl"
@@ -119,104 +121,93 @@ function Hero() {
   );
 }
 
-function HowItWorks() {
-  return (
-    <AnimatedSection className="mt-32 max-w-6xl mx-auto text-center px-4">
-      <h2 className="text-4xl font-bold mb-12">How Tera Works</h2>
-      <div className="relative flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-        <motion.div 
-          className="flex flex-col items-center bg-gray-900 rounded-xl p-8 shadow-lg w-full md:w-1/3 border border-gray-800 relative z-10"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 text-white text-3xl font-bold mb-4 shadow-lg">
-            1
-          </div>
-          <svg className="w-10 h-10 text-indigo-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M12 16V4m0 0l-4 4m4-4l4 4" strokeLinecap="round" strokeLinejoin="round"/>
-            <rect x="4" y="16" width="16" height="4" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <h3 className="text-xl font-semibold mb-2">Upload Data</h3>
-          <p className="text-gray-400">Securely upload evaluations & assessments.</p>
-        </motion.div>
-        <div className="hidden md:block absolute left-1/3 top-1/2 -translate-y-1/2 z-0">
-          <svg width="80" height="24" viewBox="0 0 80 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 12h70m0 0l-6-6m6 6l-6 6" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <motion.div 
-          className="flex flex-col items-center bg-gray-900 rounded-xl p-8 shadow-lg w-full md:w-1/3 border border-gray-800 relative z-10"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white text-3xl font-bold mb-4 shadow-lg">
-            2
-          </div>
-          <svg className="w-10 h-10 text-pink-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 12h8M12 8v8" />
-          </svg>
-          <h3 className="text-xl font-semibold mb-2">AI Generates FIE</h3>
-          <p className="text-gray-400">AI drafts TEA-aligned FIE reports tailored to each case.</p>
-        </motion.div>
-        <div className="hidden md:block absolute left-2/3 top-1/2 -translate-y-1/2 z-0">
-          <svg width="80" height="24" viewBox="0 0 80 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 12h70m0 0l-6-6m6 6l-6 6" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <motion.div 
-          className="flex flex-col items-center bg-gray-900 rounded-xl p-8 shadow-lg w-full md:w-1/3 border border-gray-800 relative z-10"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-500 text-white text-3xl font-bold mb-4 shadow-lg">
-            3
-          </div>
-          <svg className="w-10 h-10 text-cyan-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <h3 className="text-xl font-semibold mb-2">Review & Share</h3>
-          <p className="text-gray-400">Professionals review, finalize, and distribute the reports.</p>
-        </motion.div>
-      </div>
-      <div className="mt-8 flex flex-col items-center gap-2">
-        <span className="flex items-center gap-2 text-green-400 font-semibold">
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9 12l2 2l4-4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          FERPA Compliant
-        </span>
-        <span className="text-xs text-gray-400">Tera complies with FERPA, ensuring all student data is handled securely and confidentially.</span>
-      </div>
-    </AnimatedSection>
-  );
-}
-
 function ProductSection() {
   return (
-    <section id="product" className="mt-32 max-w-5xl mx-auto text-center px-4">
-      <h2 className="text-4xl font-bold mb-8">AI-powered FIE Automation</h2>
-      <p className="text-lg text-gray-300 mb-8">
-        Tera utilizes advanced AI to swiftly create legally compliant FIE reports tailored for Texas schools. Let the AI do the magic — get results in 1 minute.
-      </p>
-      <ul className="max-w-2xl mx-auto space-y-4 mb-12 text-gray-400 text-lg text-left">
-        <li>• Uses reliable assessment sources such as <span className="font-semibold text-white">WISC</span>, <span className="font-semibold text-white">BASC</span>, and more.</li>
-        <li>• Generate and review reports in 1 minute.</li>
-        <li>• Fully editable reports to ensure accuracy and compliance.</li>
-      </ul>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-8">
-        <div className="w-[320px] h-[200px] bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 rounded-xl flex items-center justify-center text-white text-xl font-bold opacity-80 shadow-lg">
-          <span>Report<br/>Mockup</span>
+    <section id="product" className="mt-12 max-w-6xl mx-auto px-4">
+      <h2 className="text-4xl font-bold mb-10 text-center">AI-powered FIE Automation</h2>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-12 mb-10">
+        {/* Left: AI Illustration */}
+        <div className="flex-1 flex flex-col items-center md:items-end">
+          <div className="w-48 h-48 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl mb-6">
+            {/* Magic wand icon */}
+            <svg className="w-24 h-24 text-white opacity-90" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 48 48">
+              <path d="M24 6v6M24 36v6M6 24h6M36 24h6M12.2 12.2l4.2 4.2M31.6 31.6l4.2 4.2M12.2 35.8l4.2-4.2M31.6 16.4l4.2-4.2" strokeLinecap="round"/>
+              <rect x="20" y="20" width="8" height="8" rx="2" fill="white" stroke="currentColor"/>
+            </svg>
+          </div>
+          <div className="hidden md:block w-80 text-right text-lg text-gray-300 font-medium">Let AI handle the paperwork, so you can focus on students.</div>
         </div>
-        <div className="w-[320px] h-[200px] bg-gray-900 rounded-xl flex flex-col items-center justify-center text-white text-base shadow-lg border border-gray-800">
-          <span className="font-semibold mb-2">Editable Preview</span>
-          <span className="text-xs text-gray-400">Users can review and edit the AI-generated report before exporting.</span>
+        {/* Right: FIE Report Preview */}
+        <div className="flex-1 flex flex-col items-center md:items-start">
+          <div className="w-[340px] h-[220px] bg-gradient-to-tr from-gray-900 via-indigo-900 to-purple-900 rounded-2xl shadow-2xl border border-gray-800 flex flex-col p-6 justify-between mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-3 h-3 rounded-full bg-red-400" />
+              <div className="w-3 h-3 rounded-full bg-yellow-400" />
+              <div className="w-3 h-3 rounded-full bg-green-400" />
+            </div>
+            <div className="flex-1 flex flex-col justify-center">
+              <div className="text-white text-lg font-bold mb-1">FIE Report Preview</div>
+              <div className="text-gray-400 text-xs mb-2">Student: John Doe | Date: 2024-05-20</div>
+              <div className="bg-gray-800 rounded p-2 text-xs text-gray-300 mb-2">"John demonstrates strengths in verbal reasoning and processing speed. Further evaluation is recommended for..."</div>
+              <div className="flex gap-2 mt-2">
+                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">WISC</span>
+                <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded">BASC</span>
+                <span className="bg-pink-600 text-white text-xs px-2 py-1 rounded">Teacher Input</span>
+              </div>
+            </div>
+            <div className="flex justify-end mt-2">
+              <span className="text-xs text-gray-500">*Editable preview</span>
+            </div>
+          </div>
+          {/* Mini Scenario Card */}
+          <div className="w-[340px] bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 rounded-xl shadow-lg p-4 text-left text-white text-sm font-medium border border-indigo-900">
+            <span className="block font-bold mb-1">Mini Scenario</span>
+            Diagnosticians can upload WISC or BASC scores at 9 AM and export a ready-to-review FIE report before their 10 AM meeting.
+          </div>
         </div>
       </div>
-      <p className="text-center text-gray-500 text-sm">*All data is encrypted and FERPA compliant.</p>
+      {/* 3-Step Process Flow */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 mt-8 mb-4">
+        {/* Step 1 */}
+        <div className="flex flex-col items-center bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-800 w-full md:w-1/3 z-10">
+          <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 text-white text-xl font-bold mb-3 shadow-lg">1</div>
+          {/* Upload icon */}
+          <svg className="w-8 h-8 text-indigo-400 mb-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4" strokeLinecap="round" strokeLinejoin="round"/><rect x="4" y="16" width="16" height="4" rx="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M16 16v2a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2"/></svg>
+          <div className="font-semibold mb-1">Drop all your reports and expert opinions</div>
+          <div className="text-gray-400 text-xs">Upload all assessment files, PDFs, and expert notes in one place. No formatting needed.</div>
+        </div>
+        {/* Arrow 1 */}
+        <div className="hidden md:flex items-center justify-center h-full z-0">
+          <svg width="60" height="24" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 12h50m0 0l-6-6m6 6l-6 6" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        {/* Step 2 */}
+        <div className="flex flex-col items-center bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-800 w-full md:w-1/3 z-10">
+          <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white text-xl font-bold mb-3 shadow-lg">2</div>
+          {/* Magic wand icon */}
+          <svg className="w-8 h-8 text-pink-400 mb-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><rect x="9" y="9" width="6" height="6" rx="1" fill="white" stroke="currentColor"/></svg>
+          <div className="font-semibold mb-1">Let AI do the magic</div>
+          <div className="text-gray-400 text-xs">Our AI instantly analyzes your documents and generates a TEA-aligned FIE draft for you.</div>
+        </div>
+        {/* Arrow 2 */}
+        <div className="hidden md:flex items-center justify-center h-full z-0">
+          <svg width="60" height="24" viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 12h50m0 0l-6-6m6 6l-6 6" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        {/* Step 3 */}
+        <div className="flex flex-col items-center bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-800 w-full md:w-1/3 z-10">
+          <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-500 text-white text-xl font-bold mb-3 shadow-lg">3</div>
+          {/* Document with checkmark icon */}
+          <svg className="w-8 h-8 text-cyan-400 mb-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2l4-4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <div className="font-semibold mb-1">Your FIE report is ready!</div>
+          <div className="text-gray-400 text-xs">Review and edit the preview as needed. Export your finalized, compliant FIE report in minutes.</div>
+        </div>
+      </div>
+      <p className="text-center text-gray-500 text-sm mt-8">*All data is encrypted and FERPA compliant.</p>
     </section>
-  );
+  )
 }
 
 function PricingSection() {
@@ -225,21 +216,33 @@ function PricingSection() {
       <h2 className="text-4xl font-bold mb-10">Pricing Plans</h2>
       <div className="grid md:grid-cols-3 gap-8">
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg flex flex-col items-center border border-gray-800">
-          {icons.price}
+          <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Introductory Plan</span>
+          <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4l3 3" />
+          </svg>
           <h3 className="text-2xl font-semibold mb-2">Free</h3>
-          <p className="mb-4 text-gray-400">Up to 3 reports per month.</p>
+          <p className="mb-4 text-gray-400">2 reports free (lifetime)</p>
           <button className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto">Start Now</button>
         </div>
         <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-1 rounded-lg shadow-lg flex flex-col items-center">
           <div className="bg-gray-900 w-full h-full p-8 rounded-lg flex flex-col items-center border border-gray-800">
-            {icons.price}
+            <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Best for evaluators, schools and districts</span>
+            <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4l3 3" />
+            </svg>
             <h3 className="text-2xl font-semibold mb-2 text-white">Pro <span className="text-lg font-normal">- $200/mo</span></h3>
-            <p className="mb-4 text-gray-300">Up to 10 reports per month.</p>
-            <button className="bg-white text-black px-6 py-2 rounded-md font-semibold mt-auto">Start Now</button>
+            <p className="mb-4 text-gray-300">10 reports per month</p>
+            <button className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto">Start Now</button>
           </div>
         </div>
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg flex flex-col items-center border border-gray-800">
-          {icons.price}
+          <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Custom solutions for your School / District</span>
+          <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4l3 3" />
+          </svg>
           <h3 className="text-2xl font-semibold mb-2">Enterprise</h3>
           <p className="mb-4 text-gray-400">Custom solutions tailored for your school.</p>
           <button className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto">Contact Us</button>
@@ -252,23 +255,23 @@ function PricingSection() {
 function AboutSection() {
   return (
     <section id="about" className="mt-32 max-w-3xl mx-auto text-center px-4">
-      <h2 className="text-4xl font-bold mb-10">About Tera</h2>
+      <h2 className="text-4xl font-bold mb-10">About FIE Pilot</h2>
       <p className="text-lg text-gray-300 mb-8">
-        Tera's mission is to revolutionize special education evaluations in Texas by harnessing AI technology. We empower diagnosticians, psychologists, and special education professionals to focus on students, not paperwork.
+        FIE Pilot's mission is to revolutionize special education evaluations in Texas by harnessing AI technology. We empower diagnosticians, psychologists, and special education professionals to focus on students, not paperwork.
       </p>
       <p className="text-gray-400 mb-8">
-        Our platform is designed in collaboration with Texas educators and neuropsychologists, ensuring every FIE report is both legally compliant and tailored to each student. By automating the most time-consuming parts of the process, Tera gives educators more time for what matters most.
+        Our platform is designed in collaboration with Texas educators and neuropsychologists, ensuring every FIE report is both legally compliant and tailored to each student. By automating the most time-consuming parts of the process, FIE Pilot gives educators more time for what matters most.
       </p>
       <div className="mt-12 flex flex-col md:flex-row items-center justify-center gap-8">
         <div className="flex flex-col items-center">
           {icons.team}
-          <span className="font-semibold">Dr. Jane Doe</span>
-          <span className="text-xs text-gray-400">Lead Neuropsychologist</span>
+          <span className="font-semibold">Isa Pakatci</span>
+          <span className="text-xs text-gray-400">AI Engineer</span>
         </div>
         <div className="flex flex-col items-center">
           {icons.team}
-          <span className="font-semibold">John Smith</span>
-          <span className="text-xs text-gray-400">AI Engineer</span>
+          <span className="font-semibold">Muhammet Akar</span>
+          <span className="text-xs text-gray-400">Educational Diagnostician</span>
         </div>
       </div>
     </section>
@@ -278,22 +281,25 @@ function AboutSection() {
 function TrustedBySection() {
   return (
     <AnimatedSection className="mt-32 max-w-6xl mx-auto text-center px-4">
-      <h2 className="text-4xl font-bold mb-8">Trusted by Texas Educators</h2>
-      <div className="grid md:grid-cols-3 gap-12 text-left">
-        <div>
-          <span className="text-2xl">✅</span>
-          <h3 className="text-xl font-semibold mb-2 inline-block ml-2">FERPA Compliant</h3>
-          <p className="text-gray-400">Student data privacy ensured.</p>
+      <h2 className="text-4xl font-bold mb-10">Trusted by Texas Educators</h2>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+        {/* FERPA Card */}
+        <div className="flex flex-col items-center bg-gray-900 rounded-xl p-8 shadow-lg border border-gray-800 w-full md:w-1/3 max-w-xs">
+          <div className="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 mb-4 shadow-lg">
+            {/* Blue check SVG */}
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2.5" fill="none"/><path d="M8 12l3 3 5-5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </div>
+          <div className="text-lg font-semibold text-white mb-1">FERPA Compliant</div>
+          <div className="text-gray-400 text-sm">Student data privacy ensured.</div>
         </div>
-        <div>
-          <span className="text-2xl">🔒</span>
-          <h3 className="text-xl font-semibold mb-2 inline-block ml-2">HIPAA Ready</h3>
-          <p className="text-gray-400">Optional compliance for relevant assessments.</p>
-        </div>
-        <div>
-          <span className="text-2xl">🧒</span>
-          <h3 className="text-xl font-semibold mb-2 inline-block ml-2">COPPA Aligned</h3>
-          <p className="text-gray-400">Designed with child data protection in mind.</p>
+        {/* COPPA Card */}
+        <div className="flex flex-col items-center bg-gray-900 rounded-xl p-8 shadow-lg border border-gray-800 w-full md:w-1/3 max-w-xs">
+          <div className="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-tr from-blue-400 via-purple-500 to-pink-500 mb-4 shadow-lg">
+            {/* Shield/child SVG */}
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 2l7 4v5c0 5-3.5 9.74-7 11-3.5-1.26-7-6-7-11V6l7-4z" stroke="white" strokeWidth="2.5" fill="none"/><circle cx="12" cy="10" r="2.5" fill="white"/><path d="M10.5 15c.5-1 2.5-1 3 0" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          </div>
+          <div className="text-lg font-semibold text-white mb-1">COPPA Aligned</div>
+          <div className="text-gray-400 text-sm">Designed with child data protection in mind.</div>
         </div>
       </div>
     </AnimatedSection>
@@ -303,7 +309,7 @@ function TrustedBySection() {
 function WhyTeraSection() {
   return (
     <AnimatedSection className="mt-32 max-w-3xl mx-auto text-center px-4">
-      <h2 className="text-4xl font-bold mb-8">🏆 Why Tera?</h2>
+      <h2 className="text-4xl font-bold mb-8">🏆 Why FIE Pilot?</h2>
       <ul className="text-lg text-gray-300 space-y-3">
         <li>• Built for Texas special education needs.</li>
         <li>• Backed by neuropsychologists and school districts.</li>
@@ -340,7 +346,7 @@ function ContactSection() {
   return (
     <AnimatedSection className="mt-32 max-w-xl mx-auto text-center px-4 mb-0 pb-0">
       <h2 className="text-4xl font-bold mb-8">Contact Us</h2>
-      <p className="text-gray-400 mb-4">A Tera team member will reach out within 1 business day.</p>
+      <p className="text-gray-400 mb-4">A FIE Pilot team member will reach out within 1 business day.</p>
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
         <input
           type="text"
@@ -375,10 +381,10 @@ function ContactSection() {
       </form>
       <div className="mt-8 flex flex-col items-center gap-2 text-gray-400">
         <div className="flex gap-4 text-xl">
-          <a href="mailto:contact@tera.com" aria-label="Email" className="hover:text-white">{icons.mail}</a>
+          <a href="mailto:info@fiepilot.ai" aria-label="Email" className="hover:text-white">{icons.mail}</a>
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-white">{icons.linkedin}</a>
         </div>
-        <span>contact@tera.com</span>
+        <span>info@fiepilot.ai</span>
       </div>
     </AnimatedSection>
   );
@@ -392,8 +398,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Tera | AI-Powered FIE Automation</title>
-        <meta name="description" content="Tera helps Texas schools generate legally compliant FIE evaluations in hours — not days. FERPA compliant, secure, and trusted by experts." />
+        <title>FIE Pilot | AI-Powered FIE Automation</title>
+        <meta name="description" content="FIE Pilot helps Texas schools generate legally compliant FIE evaluations in hours — not days. FERPA compliant, secure, and trusted by experts." />
       </Head>
       <main className="flex flex-col min-h-screen bg-black text-white">
         {/* Glow Backgrounds */}
@@ -402,7 +408,6 @@ export default function Home() {
         <Navbar />
         <div className="flex-1 flex flex-col">
           <Hero />
-          <HowItWorks />
           <ProductSection />
           <PricingSection />
           <AboutSection />

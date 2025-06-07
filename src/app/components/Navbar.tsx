@@ -13,8 +13,8 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <Image src="/logo.svg" alt="Tera Logo" width={32} height={32} className="mr-2" />
-              <span className="text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text">Tera</span>
+              <Image src="/fiepilot-logo.svg" alt="FIE Pilot Logo" width={32} height={32} className="mr-2" />
+              <span className="text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text">FIE Pilot</span>
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-8">
