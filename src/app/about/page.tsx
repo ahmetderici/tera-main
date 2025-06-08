@@ -36,14 +36,6 @@ function AboutSection() {
             <circle cx="12" cy="7" r="4" />
             <path d="M5.5 21a7.5 7.5 0 0113 0" />
           </svg>
-          <span className="font-semibold">Dr. Jane Doe</span>
-          <span className="text-xs text-gray-400">Lead Neuropsychologist</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <svg className="w-8 h-8 text-purple-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <circle cx="12" cy="7" r="4" />
-            <path d="M5.5 21a7.5 7.5 0 0113 0" />
-          </svg>
           <span className="font-semibold">Isa Pakatci</span>
           <span className="text-xs text-gray-400">AI Engineer</span>
         </div>

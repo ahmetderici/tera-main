@@ -227,7 +227,7 @@ function PricingSection() {
         </div>
         <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-1 rounded-lg shadow-lg flex flex-col items-center">
           <div className="bg-gray-900 w-full h-full p-8 rounded-lg flex flex-col items-center border border-gray-800">
-            <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Best for evaluators, schools and districts</span>
+            <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Best for diagnosticians, schools and districts</span>
             <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 8v4l3 3" />

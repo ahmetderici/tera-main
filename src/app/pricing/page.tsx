@@ -20,7 +20,7 @@ function PricingSection() {
         </div>
         <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-1 rounded-lg shadow-lg flex flex-col items-center">
           <div className="bg-gray-900 w-full h-full p-8 rounded-lg flex flex-col items-center border border-gray-800">
-            <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Best for evaluators, schools and districts</span>
+            <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Best for diagnosticians, schools and districts</span>
             <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 20l4-4a12 12 0 0 1 8-8l4-4-4 4a12 12 0 0 1-8 8l-4 4z"/><circle cx="12" cy="12" r="2"/></svg>
             <h3 className="text-2xl font-semibold mb-2 text-white">Pro <span className="text-lg font-normal">- $200/mo</span></h3>
             <p className="mb-4 text-gray-300">10 reports per month</p>
