@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 function PricingSection() {
   return (
-    <section id="pricing" className="mt-32 max-w-6xl mx-auto text-center px-4">
+    <section id="pricing" className="mt-32 w-full mx-auto text-center px-4">
       <h2 className="text-4xl font-bold mb-10">Pricing Plans</h2>
       <div className="grid md:grid-cols-3 gap-8">
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg flex flex-col items-center border border-gray-800">
@@ -41,7 +41,7 @@ function PricingSection() {
 
 export default function PricingPage() {
   return (
-    <main className="flex flex-col min-h-screen bg-black text-white">
+    <main className="flex flex-col min-h-screen bg-black text-white w-full overflow-x-hidden">
       <Navbar />
       <div className="flex-1 flex flex-col">
         <PricingSection />

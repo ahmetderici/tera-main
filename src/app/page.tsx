@@ -123,7 +123,7 @@ function Hero() {
 
 function ProductSection() {
   return (
-    <section id="product" className="mt-12 max-w-6xl mx-auto px-4">
+    <section id="product" className="mt-12 w-full mx-auto px-4">
       <h2 className="text-4xl font-bold mb-10 text-center">AI-powered FIE Automation</h2>
       <div className="flex flex-col md:flex-row items-center justify-center gap-12 mb-10">
         {/* Left: AI Illustration */}
@@ -392,7 +392,7 @@ export default function Home() {
         <title>FIE Pilot | AI-Powered FIE Automation</title>
         <meta name="description" content="FIE Pilot helps Texas schools generate legally compliant FIE evaluations in hours — not days. FERPA compliant, secure, and trusted by experts." />
       </Head>
-      <main className="flex flex-col min-h-screen bg-black text-white">
+      <main className="flex flex-col min-h-screen bg-black text-white w-full overflow-x-hidden">
         {/* Glow Backgrounds */}
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-tr from-purple-500 via-pink-500 to-blue-500 rounded-full blur-3xl opacity-20 -z-10" />
         <div className="absolute -bottom-40 right-[-300px] w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-500 rounded-full blur-3xl opacity-20 -z-10" />
