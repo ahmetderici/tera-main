@@ -148,7 +148,7 @@ function ProductSection() {
             <div className="flex-1 flex flex-col justify-center">
               <div className="text-white text-lg font-bold mb-1">FIE Report Preview</div>
               <div className="text-gray-400 text-xs mb-2">Student: John Doe | Date: 2024-05-20</div>
-              <div className="bg-gray-800 rounded p-2 text-xs text-gray-300 mb-2">"John demonstrates strengths in verbal reasoning and processing speed. Further evaluation is recommended for..."</div>
+              <div className="bg-gray-800 rounded p-2 text-xs text-gray-300 mb-2">Further evaluation is recommended. You can edit and personalize this AI-generated draft before exporting.</div>
               <div className="flex gap-2 mt-2">
                 <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">WISC</span>
                 <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded">BASC</span>
@@ -227,7 +227,7 @@ function PricingSection() {
         </div>
         <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-1 rounded-lg shadow-lg flex flex-col items-center">
           <div className="bg-gray-900 w-full h-full p-8 rounded-lg flex flex-col items-center border border-gray-800">
-            <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Best for diagnosticians, schools and districts</span>
+            <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-2 block">Best for diagnosticians<br/>Best for Schools and Districts</span>
             <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 8v4l3 3" />
@@ -244,7 +244,7 @@ function PricingSection() {
             <path d="M12 8v4l3 3" />
           </svg>
           <h3 className="text-2xl font-semibold mb-2">Enterprise</h3>
-          <p className="mb-4 text-gray-400">Custom solutions tailored for your school.</p>
+          <p className="mb-4 text-gray-400">More report credits for the whole team</p>
           <button className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto">Contact Us</button>
         </div>
       </div>
