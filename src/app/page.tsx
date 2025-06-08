@@ -394,8 +394,8 @@ export default function Home() {
       </Head>
       <main className="flex flex-col min-h-screen bg-black text-white w-full overflow-x-hidden">
         {/* Glow Backgrounds */}
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-tr from-purple-500 via-pink-500 to-blue-500 rounded-full blur-3xl opacity-20 -z-10" />
-        <div className="absolute -bottom-40 right-[-300px] w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-500 rounded-full blur-3xl opacity-20 -z-10" />
+        <div className="absolute top-0 left-0 w-full max-w-full h-[300px] md:w-[600px] md:h-[600px] bg-gradient-to-tr from-purple-500 via-pink-500 to-blue-500 rounded-full blur-3xl opacity-20 -z-10 overflow-x-hidden" />
+        <div className="absolute bottom-0 right-0 w-full max-w-full h-[250px] md:w-[500px] md:h-[500px] bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-500 rounded-full blur-3xl opacity-20 -z-10 overflow-x-hidden" />
         <Navbar />
         <div className="flex-1 flex flex-col">
           <Hero />
