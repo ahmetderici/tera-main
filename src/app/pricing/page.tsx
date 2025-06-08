@@ -28,7 +28,6 @@ function PricingSection() {
           </div>
         </div>
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg flex flex-col items-center border border-gray-800">
-          <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-4">Custom solutions for your School / District</span>
           <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12 12 2"/></svg>
           <h3 className="text-2xl font-semibold mb-2">Enterprise</h3>
           <p className="mb-4 text-gray-400">More report credits for the whole team</p>

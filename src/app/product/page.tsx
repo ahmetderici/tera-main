@@ -32,7 +32,7 @@ function ProductSection() {
             <div className="flex-1 flex flex-col justify-center">
               <div className="text-white text-lg font-bold mb-1">FIE Report Preview</div>
               <div className="text-gray-400 text-xs mb-2">Student: John Doe | Date: 2024-05-20</div>
-              <div className="bg-gray-800 rounded p-2 text-xs text-gray-300 mb-2">Further evaluation is recommended. You can edit and personalize this AI-generated draft before exporting.</div>
+              <div className="bg-gray-800 rounded p-2 text-xs text-gray-300 mb-2">Based on the comprehensive evaluation, John meets the criteria for Specific Learning Disability with a primary manifestation in Dyslexia, as evidenced by ….</div>
               <div className="flex gap-2 mt-2">
                 <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">WISC</span>
                 <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded">BASC</span>
