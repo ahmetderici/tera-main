@@ -16,7 +16,7 @@ function PricingSection() {
           <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5 12 2"/></svg>
           <h3 className="text-2xl font-semibold mb-2">Free</h3>
           <p className="mb-4 text-gray-400">2 reports free (lifetime)</p>
-          <button className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto">Start Now</button>
+          <Link href="/contact" className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto text-center w-full block">Start Now</Link>
         </div>
         <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-1 rounded-lg shadow-lg flex flex-col items-center">
           <div className="bg-gray-900 w-full h-full p-8 rounded-lg flex flex-col items-center border border-gray-800">
@@ -24,7 +24,7 @@ function PricingSection() {
             <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 20l4-4a12 12 0 0 1 8-8l4-4-4 4a12 12 0 0 1-8 8l-4 4z"/><circle cx="12" cy="12" r="2"/></svg>
             <h3 className="text-2xl font-semibold mb-2 text-white">Pro <span className="text-lg font-normal">- $200/mo</span></h3>
             <p className="mb-4 text-gray-300">10 reports per month</p>
-            <button className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto">Start Now</button>
+            <Link href="/contact" className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto text-center w-full block">Start Now</Link>
           </div>
         </div>
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg flex flex-col items-center border border-gray-800">
@@ -32,7 +32,7 @@ function PricingSection() {
           <svg className="w-8 h-8 text-blue-400 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12 12 2"/></svg>
           <h3 className="text-2xl font-semibold mb-2">Enterprise</h3>
           <p className="mb-4 text-gray-400">More report credits for the whole team</p>
-          <button className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto">Contact Us</button>
+          <Link href="/contact" className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 px-6 py-2 rounded-md font-semibold mt-auto text-center w-full block">Contact Us</Link>
         </div>
       </div>
     </section>
