@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FiUsers, FiFileText, FiBarChart2, FiClock, FiCheckCircle } from "react-icons/fi";
+import { FiUsers, FiFileText, FiBarChart2, FiClock, FiCheckCircle, FiRefreshCw } from "react-icons/fi";
 
 export default function AdminPage() {
   const router = useRouter();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastFetch, setLastFetch] = useState<Date | null>(null);
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("adminAuth");
@@ -24,15 +25,25 @@ export default function AdminPage() {
     try {
       setLoading(true);
       setError(null);
+      console.log('Fetching users from admin API...');
+      
       const res = await fetch("/api/admin/users");
       if (!res.ok) {
-        throw new Error('Failed to fetch users');
+        throw new Error(`Failed to fetch users: ${res.status} ${res.statusText}`);
       }
+      
       const data = await res.json();
+      console.log('Received users data:', data);
+      
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid data format received from server');
+      }
+      
       setUsers(data);
+      setLastFetch(new Date());
     } catch (err) {
       console.error('Error fetching users:', err);
-      setError('Failed to load users. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to load users. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -41,7 +52,10 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white text-xl">
-        Loading...
+        <div className="text-center">
+          <FiRefreshCw className="animate-spin mx-auto mb-4 text-4xl" />
+          <p>Loading users...</p>
+        </div>
       </div>
     );
   }
@@ -53,8 +67,9 @@ export default function AdminPage() {
           <p className="text-red-500 mb-4">{error}</p>
           <button
             onClick={fetchUsers}
-            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded flex items-center gap-2 mx-auto"
           >
+            <FiRefreshCw className="w-4 h-4" />
             Retry
           </button>
         </div>
@@ -65,7 +80,23 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <div className="flex items-center gap-4">
+            {lastFetch && (
+              <span className="text-sm text-gray-400">
+                Last updated: {lastFetch.toLocaleTimeString()}
+              </span>
+            )}
+            <button
+              onClick={fetchUsers}
+              className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded flex items-center gap-2"
+            >
+              <FiRefreshCw className="w-4 h-4" />
+              Refresh
+            </button>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-gray-800 p-6 rounded-lg">
@@ -93,7 +124,7 @@ export default function AdminPage() {
 
         <div className="bg-gray-800 rounded-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-xl font-bold mb-4">Users</h2>
+            <h2 className="text-xl font-bold mb-4">Users ({users.length})</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>

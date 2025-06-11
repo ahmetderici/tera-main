@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 // GET /api/admin/users
 export async function GET(req: NextRequest) {
   try {
+    console.log('Fetching all users from database...');
+    
     const users = await prisma.user.findMany({
       include: { 
         reports: {
@@ -12,6 +14,11 @@ export async function GET(req: NextRequest) {
       },
       orderBy: { createdAt: 'desc' }
     });
+
+    console.log(`Found ${users.length} users:`, users.map(u => ({ 
+      email: u.email, 
+      reports: u.reports.length 
+    })));
 
     return NextResponse.json(users);
   } catch (error) {
