@@ -32,7 +32,7 @@ export default function AdminPage() {
       setError(null);
       console.log('Fetching users from admin API...');
       
-      const res = await fetch("/api/admin/users");
+      const res = await fetch("/api/admin/users", { cache: "no-store" });
       if (!res.ok) {
         throw new Error(`Failed to fetch users: ${res.status} ${res.statusText}`);
       }

@@ -20,9 +20,9 @@ export async function GET(req: NextRequest) {
       reports: u.reports.length 
     })));
 
-    return NextResponse.json(users);
+    return NextResponse.json(users, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     console.error('Error in GET /api/admin/users:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500, headers: { 'Cache-Control': 'no-store' } });
   }
 } 
