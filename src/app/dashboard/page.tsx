@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Dashboard from "./Dashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -15,12 +14,18 @@ export default function DashboardPage() {
       router.push("/");
       return;
     }
-    setUser(JSON.parse(storedUser));
+    const parsedUser = JSON.parse(storedUser);
+    if (!parsedUser.name) {
+      localStorage.removeItem("user");
+      router.push("/auth/register");
+      return;
+    }
+    setUser(parsedUser);
   }, [router]);
 
   if (!user) {
     return null; // or a loading spinner
   }
 
-  return <Dashboard session={{ user }} />;
+  return null; // Placeholder for the removed Dashboard component
 } 

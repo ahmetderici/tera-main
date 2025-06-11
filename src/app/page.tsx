@@ -113,7 +113,7 @@ function Hero() {
         transition={{ duration: 0.5, delay: 0.4 }}
       >
         <button
-          onClick={() => signIn("google", { callbackUrl: "/auth/register" })}
+          onClick={() => signIn("google", { callbackUrl: "/auth/entry" })}
           className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-pink-500 text-white rounded-lg font-semibold hover:scale-105 transition-transform shadow-lg flex items-center justify-center gap-2"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
