@@ -49,7 +49,10 @@ export default function Register() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify(formData));
+    localStorage.setItem("user", JSON.stringify({
+      ...formData,
+      name: formData.firstName + " " + formData.lastName
+    }));
     router.push("/dashboard");
   };
 
