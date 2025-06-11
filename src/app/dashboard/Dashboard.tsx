@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { PDFDocument } from "pdf-lib";
 import { useRouter } from "next/navigation";
 import { FiUser, FiFileText, FiSettings, FiLogOut, FiBarChart2, FiClock, FiCheckCircle, FiDownload, FiTrash2, FiEdit2, FiCheck, FiX, FiUsers } from "react-icons/fi";
+import { signOut } from "next-auth/react";
 
 interface DashboardProps {
   session: {
@@ -252,11 +253,7 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
         <div className="mt-8 flex flex-col items-center">
           <button
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-indigo-500 rounded-lg text-white font-semibold shadow hover:scale-105 transition mb-2 w-full justify-center"
-            onClick={() => {
-              localStorage.removeItem("user");
-              localStorage.removeItem("previousForms");
-              window.location.href = "/";
-            }}
+            onClick={() => signOut({ callbackUrl: "/" })}
           >
             <FiLogOut className="w-5 h-5" /> Sign Out
           </button>
