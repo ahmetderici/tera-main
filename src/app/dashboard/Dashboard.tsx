@@ -252,7 +252,11 @@ export default function Dashboard({ session }: DashboardProps) {
         <div className="mt-8 flex flex-col items-center">
           <button
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-indigo-500 rounded-lg text-white font-semibold shadow hover:scale-105 transition mb-2 w-full justify-center"
-            onClick={() => router.push("/")}
+            onClick={() => {
+              localStorage.removeItem("user");
+              localStorage.removeItem("previousForms");
+              window.location.href = "/";
+            }}
           >
             <FiLogOut className="w-5 h-5" /> Sign Out
           </button>

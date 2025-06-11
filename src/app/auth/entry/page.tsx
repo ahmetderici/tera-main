@@ -10,6 +10,7 @@ export default function Entry() {
 
   useEffect(() => {
     if (status === "authenticated") {
+      localStorage.removeItem("user");
       const user = localStorage.getItem("user");
       if (user) {
         router.push("/dashboard");
