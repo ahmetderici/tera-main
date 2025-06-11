@@ -34,6 +34,7 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
   const [userName, setUserName] = useState(session.user.name);
   const [userTitle, setUserTitle] = useState(session.user.title || "Diagnostician");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showFormsMobile, setShowFormsMobile] = useState(false);
 
   // Raporlar artık props.reports üzerinden geliyor
   const previousForms = reports;
@@ -147,9 +148,9 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-indigo-950 text-white flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-indigo-950 text-white flex flex-col md:flex-row">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-full w-72 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 border-r border-gray-800 p-6 flex flex-col justify-between z-20 shadow-2xl">
+      <aside className="md:fixed md:left-0 md:top-0 md:h-full md:w-72 w-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 border-b md:border-b-0 md:border-r border-gray-800 p-6 flex flex-col justify-between z-20 shadow-2xl">
         <div>
           {/* User Card */}
           <div className="flex flex-col items-center mb-10">
@@ -183,10 +184,18 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
             )}
           </div>
 
-          {/* Previous Forms */}
-          <div>
-            <h4 className="text-md font-semibold text-gray-200 mb-3">Previous Forms</h4>
-            <ul className="space-y-3 max-h-56 overflow-y-auto pr-2">
+          {/* Previous Forms - Collapsible on mobile */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between md:block">
+              <h4 className="text-md font-semibold text-gray-200 mb-3 md:mb-3">Previous Forms</h4>
+              <button
+                className="md:hidden px-3 py-1 bg-gray-700 rounded text-xs text-gray-200"
+                onClick={() => setShowFormsMobile(v => !v)}
+              >
+                {showFormsMobile ? "Hide" : "Show"}
+              </button>
+            </div>
+            <ul className={`space-y-3 max-h-56 overflow-y-auto pr-2 ${showFormsMobile ? "block" : "hidden"} md:block`}>
               {previousForms.length === 0 && (
                 <li className="text-gray-500 text-sm">No previous forms</li>
               )}
@@ -215,8 +224,7 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
                           {form.name || `Form ${previousForms.length - idx}`}
                         </a>
                       </span>
-                      <div className="flex items-center min-w-[110px] justify-end">
-                        <span className="text-xs text-gray-400">{new Date(form.timestamp).toLocaleDateString()}</span>
+                      <div className="flex items-center min-w-[60px] justify-end">
                         <button className="ml-2 text-indigo-300 hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition" onClick={() => handleStartRename(idx)} title="Rename"><FiEdit2 /></button>
                         <button className="ml-2 text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition" onClick={() => handleDeleteForm(idx)} title="Delete"><FiTrash2 /></button>
                       </div>
@@ -257,7 +265,7 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-72 p-10 min-h-screen">
+      <main className="flex-1 md:ml-72 p-4 md:p-10 min-h-screen">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
