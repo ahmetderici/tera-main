@@ -24,40 +24,39 @@ export default function Register() {
     school: "",
     title: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check if user is already registered
-    const user = localStorage.getItem("user");
-    if (user) {
-      router.push("/dashboard");
-    }
-
-    // Check if user is authenticated with Google
     if (status === "unauthenticated") {
       router.push("/");
     }
-
-    // If authenticated, set email from Google
-    if (session?.user && session.user.email) {
-      const user = session.user as { email: string };
-      setFormData(prev => ({
-        ...prev,
-        email: user.email
-      }));
+    if (session?.user?.email) {
+      setFormData(prev => ({ ...prev, email: session.user!.email as string }));
     }
   }, [router, session, status]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify({
-      ...formData,
-      name: formData.firstName + " " + formData.lastName,
-      email: formData.email
-    }));
-    router.push("/dashboard");
+    setLoading(true);
+    const res = await fetch("/api/user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: formData.email,
+        name: formData.firstName + " " + formData.lastName,
+        school: formData.school,
+        title: formData.title,
+      }),
+    });
+    setLoading(false);
+    if (res.ok) {
+      router.push("/dashboard");
+    } else {
+      alert("Registration failed. Please try again.");
+    }
   };
 
-  if (status === "loading") {
+  if (status === "loading" || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-indigo-950 flex items-center justify-center">
         <div className="text-white text-xl">Loading...</div>

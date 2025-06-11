@@ -9,25 +9,20 @@ export default function Entry() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (status === "authenticated" && session?.user?.email) {
-      const storedUser = localStorage.getItem("user");
-      const sessionEmail = session.user.email.toLowerCase().trim();
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        const userEmail = (parsedUser.email || "").toLowerCase().trim();
-        console.log("Session email:", sessionEmail, "Stored user email:", userEmail);
-        if (userEmail === sessionEmail) {
+    const checkUser = async () => {
+      if (status === "authenticated" && session?.user?.email) {
+        const res = await fetch(`/api/user?email=${encodeURIComponent(session.user.email)}`);
+        if (res.ok) {
           router.push("/dashboard");
-          return;
         } else {
-          localStorage.removeItem("user");
+          router.push("/auth/register");
         }
       }
-      router.push("/auth/register");
-    }
-    if (status === "unauthenticated") {
-      router.push("/");
-    }
+      if (status === "unauthenticated") {
+        router.push("/");
+      }
+    };
+    checkUser();
   }, [status, session, router]);
 
   return null;

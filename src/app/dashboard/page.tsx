@@ -3,30 +3,42 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Dashboard from "./Dashboard";
+import { useSession } from "next-auth/react";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const { data: session, status } = useSession();
+  const [user, setUser] = useState<any>(null);
+  const [reports, setReports] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for user in localStorage
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) {
-      router.push("/");
-      return;
-    }
-    const parsedUser = JSON.parse(storedUser);
-    if (!parsedUser.name) {
-      localStorage.removeItem("user");
-      router.push("/auth/register");
-      return;
-    }
-    setUser(parsedUser);
-  }, [router]);
+    fetchReports();
+    // eslint-disable-next-line
+  }, [router, session, status]);
 
-  if (!user) {
-    return null; // or a loading spinner
+  const fetchReports = async () => {
+    if (session?.user?.email) {
+      setLoading(true);
+      const userRes = await fetch(`/api/user?email=${encodeURIComponent(session.user.email)}`);
+      if (!userRes.ok) {
+        router.push("/auth/register");
+        return;
+      }
+      const userData = await userRes.json();
+      setUser(userData);
+      const reportsRes = await fetch(`/api/report?email=${encodeURIComponent(session.user.email)}`);
+      const reportsData = reportsRes.ok ? await reportsRes.json() : [];
+      setReports(reportsData);
+      setLoading(false);
+    }
+  };
+
+  if (loading || status === "loading") {
+    return <div className="min-h-screen flex items-center justify-center text-white text-xl">Loading...</div>;
   }
-
-  return <Dashboard session={{ user }} />;
+  if (!user) {
+    return null;
+  }
+  return <Dashboard session={{ user }} reports={reports} fetchReports={fetchReports} />;
 } 

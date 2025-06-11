@@ -13,44 +13,37 @@ interface DashboardProps {
   session: {
     user: {
       name: string;
+      email?: string;
+      school?: string;
+      title?: string;
     };
   };
+  reports: any[];
+  fetchReports?: () => Promise<void>;
 }
 
-export default function Dashboard({ session }: DashboardProps) {
+export default function Dashboard({ session, reports, fetchReports }: DashboardProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<string | null>(null);
-  const [totalReports, setTotalReports] = useState(0);
-  const [monthlyReports, setMonthlyReports] = useState(0);
-  const [pendingReviews, setPendingReviews] = useState(0);
   const [mergedPdfUrl, setMergedPdfUrl] = useState<string | null>(null);
-  const [previousForms, setPreviousForms] = useState<{ url: string; timestamp: number; name?: string }[]>([]);
   const [renamingIdx, setRenamingIdx] = useState<number | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const router = useRouter();
   const [showUserSettings, setShowUserSettings] = useState(false);
   const [userName, setUserName] = useState(session.user.name);
-  const [userTitle, setUserTitle] = useState("Diagnostician");
+  const [userTitle, setUserTitle] = useState(session.user.title || "Diagnostician");
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Load previous forms from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem("previousForms");
-    if (stored) {
-      const forms = JSON.parse(stored);
-      setPreviousForms(forms);
-      setTotalReports(forms.length);
-      // Calculate how many are from this month
-      const now = new Date();
-      const thisMonthCount = forms.filter((f: { timestamp: number }) => {
-        const d = new Date(f.timestamp);
-        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-      }).length;
-      setMonthlyReports(thisMonthCount);
-      setPendingReviews(0); // Or adjust as needed
-    }
-  }, []);
+  // Raporlar artık props.reports üzerinden geliyor
+  const previousForms = reports;
+  const totalReports = reports.length;
+  const now = new Date();
+  const monthlyReports = reports.filter((f: { createdAt: string }) => {
+    const d = new Date(f.createdAt);
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  }).length;
+  const pendingReviews = 0; // Gerekirse backend'den alınabilir
 
   // Load user title from localStorage if exists
   useEffect(() => {
@@ -74,12 +67,20 @@ export default function Dashboard({ session }: DashboardProps) {
     localStorage.setItem("previousForms", JSON.stringify(forms));
   };
 
-  const handleDownloadMergedPdf = () => {
+  const handleDownloadMergedPdf = async () => {
     if (!mergedPdfUrl) return;
-    const newForm = { url: mergedPdfUrl, timestamp: Date.now() };
-    const updatedForms = [newForm, ...previousForms].slice(0, 10); // keep last 10
-    setPreviousForms(updatedForms);
-    savePreviousForms(updatedForms);
+    // Backend'e rapor kaydet
+    await fetch("/api/report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: session.user.email,
+        url: mergedPdfUrl,
+        name: `Report ${new Date().toLocaleString()}`,
+      }),
+    });
+    // Raporları güncelle
+    if (fetchReports) await fetchReports();
   };
 
   const handleGenerate = async () => {
@@ -104,24 +105,16 @@ export default function Dashboard({ session }: DashboardProps) {
       setMergedPdfUrl(null);
     }
     setIsGenerating(false);
-    setTotalReports(prev => prev + 1);
-    setMonthlyReports(prev => prev + 1);
-    setPendingReviews(prev => prev + 1);
   };
 
   // Delete a previous form
-  const handleDeleteForm = (idx: number) => {
-    const updated = previousForms.filter((_, i) => i !== idx);
-    setPreviousForms(updated);
-    savePreviousForms(updated);
-    setTotalReports(updated.length);
-    // Update monthlyReports as well
-    const now = new Date();
-    const thisMonthCount = updated.filter((f) => {
-      const d = new Date(f.timestamp);
-      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-    }).length;
-    setMonthlyReports(thisMonthCount);
+  const handleDeleteForm = async (idx: number) => {
+    const report = previousForms[idx];
+    if (!report || !report.id) return;
+    await fetch(`/api/report?id=${encodeURIComponent(report.id)}`, {
+      method: "DELETE"
+    });
+    if (fetchReports) await fetchReports();
   };
 
   // Start renaming
@@ -135,7 +128,6 @@ export default function Dashboard({ session }: DashboardProps) {
     const updated = previousForms.map((form, i) =>
       i === idx ? { ...form, name: renameValue } : form
     );
-    setPreviousForms(updated);
     savePreviousForms(updated);
     setRenamingIdx(null);
     setRenameValue("");
