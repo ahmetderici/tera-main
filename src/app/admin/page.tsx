@@ -19,6 +19,11 @@ export default function AdminPage() {
       return;
     }
     fetchUsers();
+    // Auto-refresh every 10 seconds
+    const interval = setInterval(() => {
+      fetchUsers();
+    }, 10000);
+    return () => clearInterval(interval);
   }, [router]);
 
   const fetchUsers = async () => {
