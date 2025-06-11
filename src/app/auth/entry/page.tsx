@@ -6,22 +6,26 @@ import { useSession } from "next-auth/react";
 
 export default function Entry() {
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     if (status === "authenticated") {
-      localStorage.removeItem("user");
-      const user = localStorage.getItem("user");
-      if (user) {
-        router.push("/dashboard");
-      } else {
-        router.push("/auth/register");
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser.email === session?.user?.email) {
+          router.push("/dashboard");
+          return;
+        } else {
+          localStorage.removeItem("user");
+        }
       }
+      router.push("/auth/register");
     }
     if (status === "unauthenticated") {
       router.push("/");
     }
-  }, [status, router]);
+  }, [status, session, router]);
 
   return null;
 } 
