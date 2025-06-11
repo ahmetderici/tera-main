@@ -4,6 +4,3 @@ node_modules
 .DS_Store
 *.log
 out
-
-
-/src/generated/prisma
