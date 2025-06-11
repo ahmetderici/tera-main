@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Dashboard from "./Dashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -27,5 +28,5 @@ export default function DashboardPage() {
     return null; // or a loading spinner
   }
 
-  return null; // Placeholder for the removed Dashboard component
+  return <Dashboard session={{ user }} />;
 } 
