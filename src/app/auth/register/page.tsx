@@ -51,7 +51,8 @@ export default function Register() {
     e.preventDefault();
     localStorage.setItem("user", JSON.stringify({
       ...formData,
-      name: formData.firstName + " " + formData.lastName
+      name: formData.firstName + " " + formData.lastName,
+      email: formData.email
     }));
     router.push("/dashboard");
   };
@@ -135,9 +136,7 @@ export default function Register() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  readOnly
                   className="w-full pl-10 pr-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="john@example.com"
                 />
