@@ -10,17 +10,8 @@ const handler = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Check if user's email is allowed
-      const allowedEmails = [
-        "ahmet@fiepilot.com",
-        "isa@fiepilot.com",
-        "muhammet@fiepilot.com"
-      ];
-      
-      if (allowedEmails.includes(user.email || "")) {
-        return true;
-      }
-      return false; // Reject sign in for other emails
+      // Allow all users to sign in
+      return true;
     },
     async session({ session, token }) {
       return session;

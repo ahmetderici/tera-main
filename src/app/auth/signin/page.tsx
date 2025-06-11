@@ -6,29 +6,18 @@ import { signIn, useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { FiLogIn } from "react-icons/fi";
 
-const ALLOWED_EMAILS = [
-  "ahmet@fiepilot.com",
-  "isa@fiepilot.com",
-  "muhammet@fiepilot.com",
-];
-
 export default function SignIn() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
   useEffect(() => {
     if (status === "authenticated") {
-      const email = session?.user?.email;
-      if (email && ALLOWED_EMAILS.includes(email)) {
-        // Check if user is already registered
-        const user = localStorage.getItem("user");
-        if (user) {
-          router.push("/dashboard");
-        } else {
-          router.push("/auth/register");
-        }
+      // Check if user is already registered
+      const user = localStorage.getItem("user");
+      if (user) {
+        router.push("/dashboard");
       } else {
-        router.push("/auth/error");
+        router.push("/auth/register");
       }
     }
   }, [session, status, router]);
@@ -81,8 +70,7 @@ export default function SignIn() {
         </button>
 
         <div className="mt-6 text-center text-sm text-gray-400">
-          <p>Only authorized users can access the system.</p>
-          <p className="mt-2">Contact your administrator for access.</p>
+          <p>Anyone can sign up and use the system with their Google account.</p>
         </div>
       </motion.div>
     </div>
