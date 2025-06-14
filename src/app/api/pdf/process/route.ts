@@ -11,13 +11,25 @@ async function validateAndProcessPDF(base64: string, index: number) {
     }
 
     // Decode base64
-    const pdfBytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    let pdfBytes: Uint8Array;
+    try {
+      pdfBytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    } catch (error) {
+      throw new Error(`Invalid base64 encoding at position ${index}`);
+    }
+
     if (pdfBytes.length === 0) {
       throw new Error(`Empty PDF at position ${index}`);
     }
 
     // Load and validate PDF
-    const pdf = await PDFDocument.load(pdfBytes);
+    let pdf: PDFDocument;
+    try {
+      pdf = await PDFDocument.load(pdfBytes);
+    } catch (error) {
+      throw new Error(`Invalid PDF format at position ${index}`);
+    }
+
     if (pdf.getPageCount() === 0) {
       throw new Error(`PDF has no pages at position ${index}`);
     }
@@ -40,6 +52,7 @@ async function saveToFirebase(mergedPdfBytes: Uint8Array, email: string, reportI
     // Upload with retry mechanism
     let retryCount = 0;
     const maxRetries = 3;
+    let lastError: Error | null = null;
 
     while (retryCount < maxRetries) {
       try {
@@ -54,24 +67,35 @@ async function saveToFirebase(mergedPdfBytes: Uint8Array, email: string, reportI
             }
           }
         });
+        console.log('Successfully uploaded to Firebase Storage');
         break;
       } catch (error) {
+        lastError = error instanceof Error ? error : new Error('Unknown upload error');
         retryCount++;
-        if (retryCount === maxRetries) throw error;
+        console.error(`Upload attempt ${retryCount} failed:`, lastError);
+        if (retryCount === maxRetries) break;
         await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
       }
     }
 
-    // Get signed URL with longer expiration
-    const [url] = await file.getSignedUrl({
-      action: 'read',
-      expires: Date.now() + 1000 * 60 * 60 * 24 * 30 // 30 days
-    });
+    if (retryCount === maxRetries && lastError) {
+      throw new Error(`Failed to upload after ${maxRetries} attempts: ${lastError.message}`);
+    }
 
-    return { url, fileName };
+    // Get signed URL with longer expiration
+    try {
+      const [url] = await file.getSignedUrl({
+        action: 'read',
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 30 // 30 days
+      });
+      console.log('Generated signed URL successfully');
+      return { url, fileName };
+    } catch (error) {
+      throw new Error(`Failed to generate signed URL: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   } catch (error) {
-    console.error('Error saving to Firebase:', error);
-    throw new Error('Failed to save PDF to storage');
+    console.error('Error in saveToFirebase:', error);
+    throw error instanceof Error ? error : new Error('Failed to save PDF to storage');
   }
 }
 
@@ -80,7 +104,15 @@ export async function POST(req: NextRequest) {
   console.log('Starting PDF processing request...');
 
   try {
-    const data = await req.json();
+    // Parse request body
+    let data: any;
+    try {
+      data = await req.json();
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
     console.log('Request data received:', {
       email: data.email,
       fileCount: data.files?.length,
@@ -95,7 +127,14 @@ export async function POST(req: NextRequest) {
     const email = data.email.toLowerCase();
 
     // User validation
-    const userSnap = await adminFirestore.collection('users').where('email', '==', email).limit(1).get();
+    let userSnap;
+    try {
+      userSnap = await adminFirestore.collection('users').where('email', '==', email).limit(1).get();
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      return NextResponse.json({ error: 'Failed to validate user' }, { status: 500 });
+    }
+
     if (userSnap.empty) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -105,7 +144,14 @@ export async function POST(req: NextRequest) {
 
     // Plan validation
     if (user.plan === 'trial') {
-      const reportsSnap = await adminFirestore.collection('reports').where('email', '==', email).get();
+      let reportsSnap;
+      try {
+        reportsSnap = await adminFirestore.collection('reports').where('email', '==', email).get();
+      } catch (error) {
+        console.error('Error checking report limit:', error);
+        return NextResponse.json({ error: 'Failed to check report limit' }, { status: 500 });
+      }
+
       if (reportsSnap.docs.length >= 2) {
         return NextResponse.json({ 
           error: 'Trial users can only upload 2 reports. Please upgrade to Pro.',
@@ -116,7 +162,14 @@ export async function POST(req: NextRequest) {
 
     // Process PDFs
     console.log('Starting PDF processing...');
-    const mergedPdf = await PDFDocument.create();
+    let mergedPdf: PDFDocument;
+    try {
+      mergedPdf = await PDFDocument.create();
+    } catch (error) {
+      console.error('Error creating PDF document:', error);
+      return NextResponse.json({ error: 'Failed to create PDF document' }, { status: 500 });
+    }
+
     const processedFiles = [];
 
     for (let i = 0; i < data.files.length; i++) {
@@ -138,11 +191,30 @@ export async function POST(req: NextRequest) {
     console.log('PDFs processed successfully:', processedFiles);
 
     // Save merged PDF
-    const mergedPdfBytes = await mergedPdf.save();
+    let mergedPdfBytes: Uint8Array;
+    try {
+      mergedPdfBytes = await mergedPdf.save();
+    } catch (error) {
+      console.error('Error saving merged PDF:', error);
+      return NextResponse.json({ error: 'Failed to save merged PDF' }, { status: 500 });
+    }
+
     const reportId = uuidv4();
 
     // Save to Firebase
-    const { url, fileName } = await saveToFirebase(mergedPdfBytes, email, reportId);
+    let url: string;
+    let fileName: string;
+    try {
+      const result = await saveToFirebase(mergedPdfBytes, email, reportId);
+      url = result.url;
+      fileName = result.fileName;
+    } catch (error) {
+      console.error('Error saving to Firebase:', error);
+      return NextResponse.json({ 
+        error: 'Failed to save PDF to storage',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }, { status: 500 });
+    }
 
     // Save metadata
     const reportData = {
@@ -157,7 +229,15 @@ export async function POST(req: NextRequest) {
       processingTime: Date.now() - startTime
     };
 
-    await adminFirestore.collection('reports').doc(reportId).set(reportData);
+    try {
+      await adminFirestore.collection('reports').doc(reportId).set(reportData);
+    } catch (error) {
+      console.error('Error saving report metadata:', error);
+      return NextResponse.json({ 
+        error: 'Failed to save report metadata',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }, { status: 500 });
+    }
 
     console.log('PDF processing completed successfully:', {
       reportId,
