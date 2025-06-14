@@ -29,23 +29,19 @@ export function Navbar() {
             <Link href="/pricing" className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 text-white font-semibold px-6 py-2 rounded-md hover:opacity-90 transition">
               See Plans
             </Link>
-            {status === "authenticated" ? (
-              <Link
-                href="/dashboard"
-                className="ml-4 flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg font-semibold hover:opacity-90 transition-colors shadow-lg"
-              >
-                <FiLogIn className="w-5 h-5" />
-                <span>Go to Dashboard</span>
-              </Link>
-            ) : (
-              <button
-                onClick={() => signIn("google", { callbackUrl: "/auth/entry" })}
-                className="ml-4 flex items-center gap-2 px-5 py-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
-              >
-                <FiLogIn className="w-5 h-5" />
-                <span>Sign in with Google</span>
-              </button>
-            )}
+            <button
+              onClick={() => {
+                if (status === "authenticated") {
+                  window.location.href = "/dashboard";
+                } else {
+                  signIn("google", { callbackUrl: "/auth/entry" });
+                }
+              }}
+              className="ml-4 flex items-center gap-2 px-5 py-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              <FiLogIn className="w-5 h-5" />
+              <span>{status === "authenticated" ? "Go to Dashboard" : "Sign in with Google"}</span>
+            </button>
           </div>
           <div className="md:hidden">
             <button
@@ -76,15 +72,19 @@ export function Navbar() {
             <Link href="/pricing" className="block px-3 py-2 bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 text-white font-semibold rounded-md hover:opacity-90 transition">
               See Plans
             </Link>
-            {status === "unauthenticated" && (
-              <button
-                onClick={() => signIn("google", { callbackUrl: "/auth/entry" })}
-                className="w-full flex items-center gap-2 px-3 py-2 mt-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
-              >
-                <FiLogIn className="w-5 h-5" />
-                <span>Sign in with Google</span>
-              </button>
-            )}
+            <button
+              onClick={() => {
+                if (status === "authenticated") {
+                  window.location.href = "/dashboard";
+                } else {
+                  signIn("google", { callbackUrl: "/auth/entry" });
+                }
+              }}
+              className="w-full flex items-center gap-2 px-3 py-2 mt-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              <FiLogIn className="w-5 h-5" />
+              <span>{status === "authenticated" ? "Go to Dashboard" : "Sign in with Google"}</span>
+            </button>
           </div>
         </div>
       )}
