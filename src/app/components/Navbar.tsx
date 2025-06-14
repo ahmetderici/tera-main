@@ -3,9 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { signIn, useSession } from "next-auth/react";
+import { FiLogIn } from "react-icons/fi";
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const { status } = useSession();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800">
@@ -26,6 +29,15 @@ export function Navbar() {
             <Link href="/pricing" className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 text-white font-semibold px-6 py-2 rounded-md hover:opacity-90 transition">
               See Plans
             </Link>
+            {status === "unauthenticated" && (
+              <button
+                onClick={() => signIn("google", { callbackUrl: "/auth/entry" })}
+                className="ml-4 flex items-center gap-2 px-5 py-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+              >
+                <FiLogIn className="w-5 h-5" />
+                <span>Sign in with Google</span>
+              </button>
+            )}
           </div>
           <div className="md:hidden">
             <button
@@ -56,6 +68,15 @@ export function Navbar() {
             <Link href="/pricing" className="block px-3 py-2 bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 text-white font-semibold rounded-md hover:opacity-90 transition">
               See Plans
             </Link>
+            {status === "unauthenticated" && (
+              <button
+                onClick={() => signIn("google", { callbackUrl: "/auth/entry" })}
+                className="w-full flex items-center gap-2 px-3 py-2 mt-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+              >
+                <FiLogIn className="w-5 h-5" />
+                <span>Sign in with Google</span>
+              </button>
+            )}
           </div>
         </div>
       )}

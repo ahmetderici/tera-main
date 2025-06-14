@@ -36,6 +36,8 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
   const [userTitle, setUserTitle] = useState(session.user.title || "Diagnostician");
   const [isAdmin, setIsAdmin] = useState(false);
   const [showFormsMobile, setShowFormsMobile] = useState(false);
+  const [userPlan, setUserPlan] = useState('trial'); // Default to trial
+  const [reportCount, setReportCount] = useState(0); // Track report count
 
   // Raporlar artık props.reports üzerinden geliyor
   const previousForms = reports;
@@ -64,6 +66,24 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
     }
   }, []);
 
+  // Fetch user plan and report count from Firestore
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!session.user.email) return; // Ensure email is defined
+      try {
+        const res = await fetch(`/api/user?email=${encodeURIComponent(session.user.email)}`);
+        if (res.ok) {
+          const userData = await res.json();
+          setUserPlan(userData.plan || 'trial');
+          setReportCount(userData.reports ? userData.reports.length : 0);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchUserData();
+  }, [session.user.email]);
+
   // Helper to save previous forms to localStorage
   const savePreviousForms = (forms: { url: string; timestamp: number }[]) => {
     localStorage.setItem("previousForms", JSON.stringify(forms));
@@ -71,13 +91,18 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
 
   const handleDownloadMergedPdf = async () => {
     if (!mergedPdfUrl) return;
+    // Convert blob to base64
+    const response = await fetch(mergedPdfUrl);
+    const blob = await response.blob();
+    const arrayBuffer = await blob.arrayBuffer();
+    const base64String = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
     // Backend'e rapor kaydet
     await fetch("/api/report", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: session.user.email,
-        url: mergedPdfUrl,
+        file: base64String,
         name: `Report ${new Date().toLocaleString()}`,
       }),
     });
@@ -87,21 +112,32 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
 
   const handleGenerate = async () => {
     setIsGenerating(true);
-    // Merge PDFs
     if (files.length > 0) {
-      const mergedPdf = await PDFDocument.create();
-      for (const file of files) {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer);
-        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      // Convert all files to base64
+      const base64Files = await Promise.all(
+        files.map(async (file) => {
+          const arrayBuffer = await file.arrayBuffer();
+          return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+        })
+      );
+      // Send to backend for processing
+      const res = await fetch("/api/pdf/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: session.user.email,
+          files: base64Files,
+          name: `Report ${new Date().toLocaleString()}`,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMergedPdfUrl(data.url);
+        setGeneratedContent(null);
+      } else {
+        setGeneratedContent("PDF processing failed.");
+        setMergedPdfUrl(null);
       }
-      const mergedPdfBytes = await mergedPdf.save();
-      const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      setMergedPdfUrl(url);
-      setGeneratedContent(null); // No AI content for now
-      // Do NOT save to previous forms here
     } else {
       setGeneratedContent("No files to merge.");
       setMergedPdfUrl(null);
@@ -112,9 +148,11 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
   // Delete a previous form
   const handleDeleteForm = async (idx: number) => {
     const report = previousForms[idx];
-    if (!report || !report.id) return;
-    await fetch(`/api/report?id=${encodeURIComponent(report.id)}`, {
-      method: "DELETE"
+    if (!report || !report.id || !report.fileName) return;
+    await fetch(`/api/report`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: report.id, fileName: report.fileName }),
     });
     if (fetchReports) await fetchReports();
   };
@@ -221,7 +259,7 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
                   ) : (
                     <>
                       <span className="flex-1 min-w-0">
-                        <a href={form.url} download={`${form.name || `merged-report-${form.timestamp}`}.pdf`} className="hover:underline text-sm whitespace-nowrap overflow-hidden text-ellipsis block">
+                        <a href={form.url} download={`${form.name || `report`}.pdf`} className="hover:underline text-sm whitespace-nowrap overflow-hidden text-ellipsis block">
                           {form.name || `Form ${previousForms.length - idx}`}
                         </a>
                       </span>
@@ -295,7 +333,13 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
           {/* Upload Section */}
           <div className="bg-gray-800/80 rounded-2xl p-8 border border-gray-700 mb-10 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2"><FiFileText className="w-6 h-6 text-indigo-400" /> Upload Assessment Files</h2>
-            <UploadBox files={files} setFiles={setFiles} />
+            {userPlan === 'trial' && reportCount >= 2 ? (
+              <div className="bg-red-500 text-white p-4 rounded-lg mb-4">
+                <p>You have reached the limit of 2 reports for trial users. Please upgrade to Pro to continue.</p>
+              </div>
+            ) : (
+              <UploadBox files={files} setFiles={setFiles} />
+            )}
           </div>
 
           {/* Generate Button */}
