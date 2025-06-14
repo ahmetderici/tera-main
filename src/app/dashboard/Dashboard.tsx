@@ -124,57 +124,103 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
     }
 
     setIsGenerating(true);
-    try {
-      console.log('Starting PDF generation process...');
-      console.log('Number of files:', files.length);
+    const startTime = Date.now();
 
-      // Convert files to base64
+    try {
+      console.log('Starting PDF generation process...', {
+        fileCount: files.length,
+        email: session.user.email,
+        timestamp: new Date().toISOString()
+      });
+
+      // Validate files
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.size === 0) {
+          throw new Error(`File ${i + 1} is empty`);
+        }
+        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+          throw new Error(`File ${i + 1} is too large (max 10MB)`);
+        }
+        if (file.type !== 'application/pdf') {
+          throw new Error(`File ${i + 1} is not a PDF`);
+        }
+      }
+
+      // Convert files to base64 with progress tracking
       const base64Files = await Promise.all(
         files.map(async (file, index) => {
           try {
-            console.log(`Converting file ${index + 1} to base64...`);
+            console.log(`Converting file ${index + 1}/${files.length} to base64...`);
             const buffer = await file.arrayBuffer();
             const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
             console.log(`Successfully converted file ${index + 1}`);
             return base64;
           } catch (error) {
             console.error(`Error converting file ${index + 1}:`, error);
-            throw new Error(`Failed to convert file ${index + 1} to base64`);
+            throw new Error(`Failed to convert file ${index + 1} to base64: ${error.message}`);
           }
         })
       );
 
       console.log('All files converted to base64');
 
-      // Send to backend
-      const response = await fetch('/api/pdf/process', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: session.user.email,
-          files: base64Files,
-          name: `Report ${new Date().toLocaleString()}`,
-        }),
-      });
+      // Send to backend with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      const data = await response.json();
+      try {
+        const response = await fetch('/api/pdf/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: session.user.email,
+            files: base64Files,
+            name: `Report ${new Date().toLocaleString()}`,
+          }),
+          signal: controller.signal
+        });
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate PDF');
+        clearTimeout(timeoutId);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (data.upgradeUrl) {
+            // Handle trial limit reached
+            const shouldUpgrade = confirm('You have reached your trial limit. Would you like to upgrade to Pro?');
+            if (shouldUpgrade) {
+              window.location.href = data.upgradeUrl;
+            }
+            throw new Error(data.error);
+          }
+          throw new Error(data.error || 'Failed to generate PDF');
+        }
+
+        console.log('PDF generated successfully:', {
+          ...data,
+          processingTime: Date.now() - startTime
+        });
+
+        setMergedPdfUrl(data.url);
+
+        // Update report count and remaining reports
+        setReportCount(prev => prev + 1);
+        if (userPlan === 'trial') {
+          setRemainingReports(prev => Math.max(0, prev - 1));
+        }
+
+        // Clear files after successful generation
+        setFiles([]);
+
+        // Show success message with metadata
+        alert(`PDF generated successfully!\nPages: ${data.metadata.pageCount}\nProcessing time: ${(data.metadata.processingTime / 1000).toFixed(1)}s`);
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.');
+        }
+        throw error;
       }
-
-      console.log('PDF generated successfully:', data);
-      setMergedPdfUrl(data.url);
-
-      // Update report count and remaining reports
-      setReportCount(prev => prev + 1);
-      if (userPlan === 'trial') {
-        setRemainingReports(prev => Math.max(0, prev - 1));
-      }
-
-      // Clear files after successful generation
-      setFiles([]);
-      alert('PDF generated successfully!');
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert(error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.');
