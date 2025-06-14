@@ -117,16 +117,34 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
       alert('Please upload at least one PDF file');
       return;
     }
-    
+
+    if (!session?.user?.email) {
+      alert('Please sign in to generate reports');
+      return;
+    }
+
     setIsGenerating(true);
     try {
+      console.log('Starting PDF generation process...');
+      console.log('Number of files:', files.length);
+
       // Convert files to base64
       const base64Files = await Promise.all(
-        files.map(async (file) => {
-          const buffer = await file.arrayBuffer();
-          return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+        files.map(async (file, index) => {
+          try {
+            console.log(`Converting file ${index + 1} to base64...`);
+            const buffer = await file.arrayBuffer();
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+            console.log(`Successfully converted file ${index + 1}`);
+            return base64;
+          } catch (error) {
+            console.error(`Error converting file ${index + 1}:`, error);
+            throw new Error(`Failed to convert file ${index + 1} to base64`);
+          }
         })
       );
+
+      console.log('All files converted to base64');
 
       // Send to backend
       const response = await fetch('/api/pdf/process', {
@@ -139,14 +157,15 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to generate PDF');
+        throw new Error(data.error || 'Failed to generate PDF');
       }
 
-      const data = await response.json();
+      console.log('PDF generated successfully:', data);
       setMergedPdfUrl(data.url);
-      
+
       // Update report count and remaining reports
       setReportCount(prev => prev + 1);
       if (userPlan === 'trial') {
@@ -155,6 +174,7 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
 
       // Clear files after successful generation
       setFiles([]);
+      alert('PDF generated successfully!');
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert(error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.');
