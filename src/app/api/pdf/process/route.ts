@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
-import { adminStorage } from '@/lib/firebase';
+import { adminStorage } from '@/lib/firebaseAdmin';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: NextRequest) {

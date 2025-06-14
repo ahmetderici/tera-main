@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminFirestore, adminStorage } from '@/lib/firebase';
+import { adminFirestore, adminStorage } from '@/lib/firebaseAdmin';
 import { v4 as uuidv4 } from 'uuid';
 
 // GET /api/report?email=...

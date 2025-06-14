@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminFirestore } from '@/lib/firebase';
+import { adminFirestore } from '@/lib/firebaseAdmin';
 
 // GET /api/user?email=...
 export async function GET(req: NextRequest) {
