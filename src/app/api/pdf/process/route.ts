@@ -25,7 +25,10 @@ async function validateAndProcessPDF(base64: string, index: number) {
     return pdf;
   } catch (error) {
     console.error(`Error processing PDF at position ${index}:`, error);
-    throw error;
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`Unknown error processing PDF at position ${index}`);
   }
 }
 
@@ -124,8 +127,9 @@ export async function POST(req: NextRequest) {
         processedFiles.push(i + 1);
       } catch (error) {
         console.error(`Failed to process file ${i + 1}:`, error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json({ 
-          error: `Error processing file ${i + 1}: ${error.message}`,
+          error: `Error processing file ${i + 1}: ${errorMessage}`,
           processedFiles
         }, { status: 400 });
       }
@@ -173,9 +177,10 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error('Error in PDF processing:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ 
       error: 'Internal server error',
-      details: error.message
+      details: errorMessage
     }, { status: 500 });
   }
 } 

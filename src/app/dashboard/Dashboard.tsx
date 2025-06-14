@@ -158,7 +158,8 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
             return base64;
           } catch (error) {
             console.error(`Error converting file ${index + 1}:`, error);
-            throw new Error(`Failed to convert file ${index + 1} to base64: ${error.message}`);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            throw new Error(`Failed to convert file ${index + 1} to base64: ${errorMessage}`);
           }
         })
       );
@@ -216,14 +217,15 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
         // Show success message with metadata
         alert(`PDF generated successfully!\nPages: ${data.metadata.pageCount}\nProcessing time: ${(data.metadata.processingTime / 1000).toFixed(1)}s`);
       } catch (error) {
-        if (error.name === 'AbortError') {
+        if (error instanceof Error && error.name === 'AbortError') {
           throw new Error('Request timed out. Please try again.');
         }
         throw error;
       }
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert(error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.';
+      alert(errorMessage);
     } finally {
       setIsGenerating(false);
     }
