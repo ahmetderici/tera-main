@@ -7,10 +7,12 @@ import path from 'path';
 let serviceAccount: any;
 if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
   serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-} else {
+} else if (process.env.NODE_ENV !== 'production') {
   // Fallback to local file for dev
   const serviceAccountPath = path.join(process.cwd(), 'serviceAccountKey.json');
   serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf-8'));
+} else {
+  throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY environment variable must be set in production!');
 }
 
 const adminApp = !getApps().length
