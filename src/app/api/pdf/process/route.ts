@@ -45,6 +45,10 @@ async function validateAndProcessPDF(base64: string, index: number) {
 }
 
 async function saveToFirebase(mergedPdfBytes: Uint8Array, email: string, reportId: string) {
+  if (!adminStorage) {
+    throw new Error('Firebase Storage is not initialized');
+  }
+
   const fileName = `reports/${email}/${reportId}.pdf`;
   const file = adminStorage.file(fileName);
 
@@ -56,8 +60,10 @@ async function saveToFirebase(mergedPdfBytes: Uint8Array, email: string, reportI
 
     while (retryCount < maxRetries) {
       try {
-        await file.save(Buffer.from(mergedPdfBytes), {
-          contentType: 'application/pdf',
+        console.log(`Attempting to upload file (attempt ${retryCount + 1}/${maxRetries})...`);
+        
+        // Create a write stream
+        const writeStream = file.createWriteStream({
           metadata: {
             contentType: 'application/pdf',
             metadata: {
@@ -65,8 +71,26 @@ async function saveToFirebase(mergedPdfBytes: Uint8Array, email: string, reportI
               reportId,
               timestamp: new Date().toISOString()
             }
-          }
+          },
+          resumable: false // Disable resumable uploads for small files
         });
+
+        // Handle stream events
+        await new Promise((resolve, reject) => {
+          writeStream.on('error', (error: Error) => {
+            console.error('Write stream error:', error);
+            reject(error);
+          });
+
+          writeStream.on('finish', () => {
+            console.log('File upload completed');
+            resolve(true);
+          });
+
+          // Write the file
+          writeStream.end(Buffer.from(mergedPdfBytes));
+        });
+
         console.log('Successfully uploaded to Firebase Storage');
         break;
       } catch (error) {
@@ -84,6 +108,7 @@ async function saveToFirebase(mergedPdfBytes: Uint8Array, email: string, reportI
 
     // Get signed URL with longer expiration
     try {
+      console.log('Generating signed URL...');
       const [url] = await file.getSignedUrl({
         action: 'read',
         expires: Date.now() + 1000 * 60 * 60 * 24 * 30 // 30 days
@@ -91,6 +116,7 @@ async function saveToFirebase(mergedPdfBytes: Uint8Array, email: string, reportI
       console.log('Generated signed URL successfully');
       return { url, fileName };
     } catch (error) {
+      console.error('Error generating signed URL:', error);
       throw new Error(`Failed to generate signed URL: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   } catch (error) {
