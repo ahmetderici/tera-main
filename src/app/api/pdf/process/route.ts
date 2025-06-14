@@ -31,13 +31,16 @@ export async function POST(req: NextRequest) {
     const mergedPdf = await PDFDocument.create();
     for (const base64 of data.files) {
       try {
+        // Decode base64 and create PDF
         const pdfBytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
         const pdf = await PDFDocument.load(pdfBytes);
+        
+        // Copy all pages
         const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         copiedPages.forEach((page) => mergedPdf.addPage(page));
       } catch (error) {
         console.error('Error processing PDF:', error);
-        return NextResponse.json({ error: 'Invalid PDF file' }, { status: 400 });
+        return NextResponse.json({ error: 'Invalid PDF file format' }, { status: 400 });
       }
     }
 
@@ -46,22 +49,47 @@ export async function POST(req: NextRequest) {
     const reportId = uuidv4();
     const fileName = `reports/${email}/${reportId}.pdf`;
 
-    // Upload to Firebase Storage
-    const file = adminStorage.file(fileName);
-    await file.save(Buffer.from(mergedPdfBytes), { contentType: 'application/pdf' });
-    const [url] = await file.getSignedUrl({ action: 'read', expires: Date.now() + 1000 * 60 * 60 * 24 * 7 }); // 7 days
+    try {
+      // Upload to Firebase Storage
+      const file = adminStorage.file(fileName);
+      await file.save(Buffer.from(mergedPdfBytes), { 
+        contentType: 'application/pdf',
+        metadata: {
+          contentType: 'application/pdf',
+          metadata: {
+            email: email,
+            reportId: reportId
+          }
+        }
+      });
 
-    // Save report metadata to Firestore
-    const reportData = {
-      email,
-      name: data.name || null,
-      url,
-      fileName,
-      createdAt: new Date().toISOString(),
-    };
-    await adminFirestore.collection('reports').doc(reportId).set(reportData);
+      // Get signed URL
+      const [url] = await file.getSignedUrl({ 
+        action: 'read', 
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7 // 7 days
+      });
 
-    return NextResponse.json({ url, fileName, reportId });
+      // Save report metadata to Firestore
+      const reportData = {
+        email,
+        name: data.name || `Report ${new Date().toLocaleString()}`,
+        url,
+        fileName,
+        createdAt: new Date().toISOString(),
+        status: 'completed'
+      };
+      await adminFirestore.collection('reports').doc(reportId).set(reportData);
+
+      return NextResponse.json({ 
+        url, 
+        fileName, 
+        reportId,
+        message: 'PDF generated successfully'
+      });
+    } catch (error) {
+      console.error('Error saving PDF:', error);
+      return NextResponse.json({ error: 'Failed to save PDF' }, { status: 500 });
+    }
   } catch (error) {
     console.error('Error in POST /api/pdf/process:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

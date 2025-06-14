@@ -113,7 +113,11 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
   };
 
   const handleGenerate = async () => {
-    if (!files.length) return;
+    if (!files.length) {
+      alert('Please upload at least one PDF file');
+      return;
+    }
+    
     setIsGenerating(true);
     try {
       // Convert files to base64
@@ -136,7 +140,8 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate PDF');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate PDF');
       }
 
       const data = await response.json();
@@ -147,9 +152,12 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
       if (userPlan === 'trial') {
         setRemainingReports(prev => Math.max(0, prev - 1));
       }
+
+      // Clear files after successful generation
+      setFiles([]);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      alert(error instanceof Error ? error.message : 'Failed to generate PDF. Please try again.');
     } finally {
       setIsGenerating(false);
     }
