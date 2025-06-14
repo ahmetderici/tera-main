@@ -9,6 +9,7 @@ import { PDFDocument } from "pdf-lib";
 import { useRouter } from "next/navigation";
 import { FiUser, FiFileText, FiSettings, FiLogOut, FiBarChart2, FiClock, FiCheckCircle, FiDownload, FiTrash2, FiEdit2, FiCheck, FiX, FiUsers } from "react-icons/fi";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 interface DashboardProps {
   session: {
@@ -38,6 +39,7 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
   const [showFormsMobile, setShowFormsMobile] = useState(false);
   const [userPlan, setUserPlan] = useState('trial'); // Default to trial
   const [reportCount, setReportCount] = useState(0); // Track report count
+  const [remainingReports, setRemainingReports] = useState(2); // Track remaining reports
 
   // Raporlar artık props.reports üzerinden geliyor
   const previousForms = reports;
@@ -111,38 +113,46 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
   };
 
   const handleGenerate = async () => {
+    if (!files.length) return;
     setIsGenerating(true);
-    if (files.length > 0) {
-      // Convert all files to base64
+    try {
+      // Convert files to base64
       const base64Files = await Promise.all(
         files.map(async (file) => {
-          const arrayBuffer = await file.arrayBuffer();
-          return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+          const buffer = await file.arrayBuffer();
+          return btoa(String.fromCharCode(...new Uint8Array(buffer)));
         })
       );
-      // Send to backend for processing
-      const res = await fetch("/api/pdf/process", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+
+      // Send to backend
+      const response = await fetch('/api/pdf/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: session.user.email,
           files: base64Files,
           name: `Report ${new Date().toLocaleString()}`,
         }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setMergedPdfUrl(data.url);
-        setGeneratedContent(null);
-      } else {
-        setGeneratedContent("PDF processing failed.");
-        setMergedPdfUrl(null);
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
       }
-    } else {
-      setGeneratedContent("No files to merge.");
-      setMergedPdfUrl(null);
+
+      const data = await response.json();
+      setMergedPdfUrl(data.url);
+      
+      // Update report count and remaining reports
+      setReportCount(prev => prev + 1);
+      if (userPlan === 'trial') {
+        setRemainingReports(prev => Math.max(0, prev - 1));
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsGenerating(false);
     }
-    setIsGenerating(false);
   };
 
   // Delete a previous form
@@ -328,6 +338,42 @@ export default function Dashboard({ session, reports, fetchReports }: DashboardP
               <div className="flex items-center gap-2 text-purple-200"><FiCheckCircle className="w-6 h-6" /><span className="text-gray-300">Pending Reviews</span></div>
               <div className="text-3xl font-bold mt-2">{pendingReviews}</div>
             </div>
+          </div>
+
+          {/* User Plan Info */}
+          <div className="bg-gray-800/80 rounded-2xl p-8 border border-gray-700 mb-10 shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+              <FiUser className="w-6 h-6 text-indigo-400" /> Account Status
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-700/50 rounded-lg p-4">
+                <h3 className="text-lg font-semibold mb-2">Current Plan</h3>
+                <div className="flex items-center gap-2">
+                  <span className={`px-3 py-1 rounded-full text-sm ${
+                    userPlan === 'pro' ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'
+                  }`}>
+                    {userPlan === 'pro' ? 'Pro' : 'Trial'}
+                  </span>
+                </div>
+              </div>
+              <div className="bg-gray-700/50 rounded-lg p-4">
+                <h3 className="text-lg font-semibold mb-2">Remaining Reports</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">
+                    {userPlan === 'pro' ? '10' : remainingReports}
+                  </span>
+                  <span className="text-gray-400">reports</span>
+                </div>
+              </div>
+            </div>
+            {userPlan === 'trial' && remainingReports === 0 && (
+              <div className="mt-4 bg-red-500/20 text-red-400 p-4 rounded-lg">
+                <p>You have reached your trial limit. Please upgrade to Pro to continue generating reports.</p>
+                <Link href="/pricing" className="mt-2 inline-block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                  Upgrade to Pro
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Upload Section */}
