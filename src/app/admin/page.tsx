@@ -69,7 +69,19 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-indigo-950 text-white p-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
+        {/* Top bar with Admin Panel title and Sign Out button */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Admin Panel</h1>
+          <button
+            onClick={() => {
+              localStorage.removeItem("adminAuth");
+              router.push("/");
+            }}
+            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded font-semibold"
+          >
+            Sign Out
+          </button>
+        </div>
         <div className="bg-gray-800 rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Users</h2>
           <div className="space-y-4">
